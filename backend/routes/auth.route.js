@@ -1,6 +1,6 @@
 import express from 'express';
 import { body } from 'express-validator';
-import { signup } from './../controllers/auth.controller.js';
+import { login, signup } from '../controllers/auth.controller.js';
 
 const authRouter = express.Router();
 
@@ -9,6 +9,12 @@ authRouter.post('/register',
     body("email").isString().withMessage("Email is required"),
     body("password").isString().withMessage("Password is required")
     ,signup);
+
+authRouter.post('/login',
+    body("email").isString().withMessage("Email is required"),
+    body("password").isString().withMessage("Password is required")
+    ,login
+)
 
 
 export default authRouter;

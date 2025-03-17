@@ -25,3 +25,27 @@ export const signup=async(req,res)=>{
           res.status(500).json({error:error.message});
      }
 }
+
+
+export const login=async(req,res)=>{
+     const errors=validationResult(req);
+     if(!errors.isEmpty()){
+          return res.status(400).json({errors:errors.array()});
+     }
+     try {
+          const {email,password}=req.body;
+          const user=await userModel.findOne({email});
+          if(!user){
+               return res.status(400).json({errors:[{msg:"Invalid credentials"}]});
+          }
+          const isMatch=await user.comparePassword(password);
+          if(!isMatch){
+               return res.status(400).json({errors:[{msg:"Invalid credentials"}]});
+          }
+          const token=await user.generateAuthToken();
+          res.json({user,token});
+     } catch (error) {
+          console.log(error);
+          res.status(500).json({error:error.message});
+     }
+}
