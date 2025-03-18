@@ -43,6 +43,12 @@ export const login=async(req,res)=>{
                return res.status(400).json({errors:[{msg:"Invalid credentials"}]});
           }
           const token=await user.generateAuthToken();
+          res.cookie("jwt", token, {
+               maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+               httpOnly: true,
+               sameSite: "strict",
+               secure: false,
+             });
           res.json({user,token});
      } catch (error) {
           console.log(error);

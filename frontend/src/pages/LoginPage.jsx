@@ -1,7 +1,20 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import twitterLogo from "../assets/logo.webp";
 import { Link } from "react-router-dom";
+import { UserContext } from "../../context/UserContext";
 const loginPage = () => {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  })
+
+  const {loginUser}=useContext(UserContext);
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    loginUser(formData);
+    setFormData({ email: "", password: "" });
+  }
   return (
     <div className="h-screen flex justify-center items-center  ">
       {/* twitter Logo */}
@@ -15,10 +28,12 @@ const loginPage = () => {
           <h1 className="text-6xl font-bold">Login now to Tweet</h1>
         </div>
 
-        <form className="flex flex-col space-y-4 mt-4">
+        <form onSubmit={submitHandler} className="flex flex-col space-y-4 mt-4">
           <label className=" flex flex-col  text-lg">
             Email
             <input
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               type="email"
               placeholder="Enter your email"
               className="border border-gray-300 outline-0 p-2 bg-transparent  rounded"
@@ -28,6 +43,8 @@ const loginPage = () => {
           <label className=" flex flex-col  text-lg">
             Password
             <input
+              value={formData.password}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               type="password"
               placeholder="Enter your password"
               className="border border-gray-300 outline-0 p-2 bg-transparent  rounded"
@@ -35,7 +52,7 @@ const loginPage = () => {
           </label>
 
           <button className="bg-blue-500 p-2 rounded-full hover:bg-blue-400 cursor-pointer">
-            Create Account
+            Login
           </button>
         </form>
         <Link

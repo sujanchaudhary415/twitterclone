@@ -1,7 +1,24 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import twitterLogo from "../assets/logo.webp";
 import { Link } from "react-router-dom";
+import { UserContext } from "../../context/UserContext";
+
+
 const signupPage = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  const { registerUser } = useContext(UserContext);
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    registerUser(formData);
+    setFormData({ name: "", email: "", password: "" });
+  };
+
   return (
     <div className="h-screen flex justify-center items-center  ">
       {/* twitter Logo */}
@@ -12,14 +29,18 @@ const signupPage = () => {
       {/* Signup Form */}
       <div c>
         <div className="flex flex-col gap-12">
-          <h1 className="text-6xl font-bold" >Happening Now</h1>
+          <h1 className="text-6xl font-bold">Happening Now</h1>
           <h3 className="text-3xl font-bold">Join Today.</h3>
         </div>
 
-        <form className="flex flex-col space-y-4 mt-4">
+        <form onSubmit={submitHandler} className="flex flex-col space-y-4 mt-4">
           <label className="flex flex-col text-lg">
             Name
             <input
+              value={formData.name}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
               type="text"
               placeholder="Enter your name"
               className="border border-gray-300 outline-0 p-2 bg-transparent text-white rounded"
@@ -29,6 +50,10 @@ const signupPage = () => {
           <label className=" flex flex-col  text-lg">
             Email
             <input
+              value={formData.email}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
               type="email"
               placeholder="Enter your email"
               className="border border-gray-300 outline-0 p-2 bg-transparent  rounded"
@@ -38,6 +63,10 @@ const signupPage = () => {
           <label className=" flex flex-col  text-lg">
             Password
             <input
+              value={formData.password}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
               type="password"
               placeholder="Enter your password"
               className="border border-gray-300 outline-0 p-2 bg-transparent  rounded"
@@ -48,7 +77,10 @@ const signupPage = () => {
             Create Account
           </button>
         </form>
-        <Link to='/login' className="block text-center text-sm text-gray-400 cursor-pointer">
+        <Link
+          to="/login"
+          className="block text-center text-sm text-gray-400 cursor-pointer"
+        >
           Already have an account?
         </Link>
       </div>
