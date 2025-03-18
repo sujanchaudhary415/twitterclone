@@ -7,6 +7,20 @@ export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true)
+
+  const checkAuth = async () => {
+    try {
+      const res = await axiosInstance.get("/auth/check");
+      setUser(res.data);
+    } catch (error) {
+      setUser(null); 
+      toast.error("Failed to check authentication");
+    } finally {
+      setIsCheckingAuth(false); // ✅ Always set to false
+    }
+  };
+  
 
   const registerUser = async (userData) => {
     try {
@@ -32,5 +46,5 @@ export const UserProvider = ({ children }) => {
 
   }
 
-  return <UserContext.Provider value={{user,setUser,registerUser,loginUser}}>{children}</UserContext.Provider>;
+  return <UserContext.Provider value={{user,setUser,registerUser,loginUser,setIsCheckingAuth,isCheckingAuth,checkAuth}}>{children}</UserContext.Provider>;
 };

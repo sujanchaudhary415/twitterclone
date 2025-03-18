@@ -55,3 +55,12 @@ export const login=async(req,res)=>{
           res.status(500).json({error:error.message});
      }
 }
+
+export const checkAuth = async (req, res, next) => {
+     try {
+       res.status(200).json(req.user);
+     } catch (error) {
+       console.error("error in checking authentication", error);
+       res.status(500).json({ message: "Server Error" });
+     }
+   };
