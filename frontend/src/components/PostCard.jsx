@@ -5,6 +5,7 @@ import { FaRegComment } from "react-icons/fa";
 import { FcLike } from "react-icons/fc";
 const PostCard = () => {
   return (
+    <>
     <div className="px-4 py-2 flex gap-2">
       <img src={profileImage} alt="" className="size-8 rounded-full" />
       <div>
@@ -29,6 +30,8 @@ const PostCard = () => {
         </div>
       </div>
     </div>
+    <hr className="w-full border-gray-600 mt-2" />
+    </>
   );
 };
 
