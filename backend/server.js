@@ -4,6 +4,7 @@ import { connectDB } from './config/db.js';
 import authRouter from './routes/auth.route.js';
 import cors from 'cors';
 import cookieParser from "cookie-parser";
+import postRouter from './routes/post.route.js';
 
 
 dotenv.config();
@@ -16,7 +17,8 @@ app.use(cors({
     credentials: true
 }))
 // Routes
-app.use('/api/auth',authRouter)
+app.use('/api/auth',authRouter);
+app.use('/api/posts',postRouter);
 
 app.listen(4000,()=>{
     console.log("Server started at http://localhost:4000");

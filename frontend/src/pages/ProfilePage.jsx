@@ -1,11 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
 import { FaArrowLeft } from "react-icons/fa6";
 import profileImage from "../assets/profileImage.jpeg";
 import { CiLocationArrow1 } from "react-icons/ci";
 import { MdDateRange } from "react-icons/md";
 import PostCard from "./../components/PostCard";
 import { Link } from "react-router-dom";
+import { UserContext } from './../../context/UserContext';
+import { formatDate } from './../../lib/formatDate';
 const ProfilePage = () => {
+  const {user}=useContext(UserContext);
+  console.log(user);
+  
   return (
     <div className="border-r-1 h-screen border-gray-600 overflow-auto scrollbar-hide">
       <div className="flex items-center gap-8">
@@ -13,7 +18,7 @@ const ProfilePage = () => {
           <FaArrowLeft className="size-6 text-blue-500" />
         </Link>
         <div className="flex flex-col">
-          <h1 className="font-bold">Name</h1>
+          <h1 className="font-bold">{user.name}</h1>
           <p className="text-gray-600 text-sm">9 tweets</p>
         </div>
       </div>
@@ -34,17 +39,17 @@ const ProfilePage = () => {
           </button>
         </div>
         <div className="px-4">
-          <h1 className="font-bold text-2xl mt-4">User name</h1>
-          <p className="text-gray-600 text-sm">@username</p>
-          <p>Proffesion</p>
+          <h1 className="font-bold text-2xl mt-4">{user.name}</h1>
+          <p className="text-gray-600 text-sm">{user.email}</p>
+          <p>{user.proffession}</p>
           <div className="flex items-center gap-2 text-gray-500 mt-4 ">
             <div className="flex items-center gap-2">
               <CiLocationArrow1 className="size-6" />
-              <p>Location name</p>
+              <p>{user.location}</p>
             </div>
             <div className="flex items-center gap-2">
               <MdDateRange className="size-6" />
-              <p>Joined Date</p>
+              <p>{formatDate(user.joinedAt)}</p>
             </div>
           </div>
           <div className="flex gap-4 mt-2">

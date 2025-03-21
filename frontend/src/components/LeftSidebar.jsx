@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { FaTwitter } from "react-icons/fa";
 import { RiHome4Fill } from "react-icons/ri";
 import { CiHashtag } from "react-icons/ci";
@@ -10,7 +10,10 @@ import { CiUser } from "react-icons/ci";
 import { CiViewList } from "react-icons/ci";
 import profileImage from "../assets/profileImage.jpeg";
 import { Link } from "react-router-dom";
+import { CiLogout } from "react-icons/ci";
+import { UserContext } from './../../context/UserContext';
 const LeftSidebar = () => {
+  const {logoutUser}=useContext(UserContext);
   return (
     <div className="flex flex-col justify-between h-screen py-2 border-r-1 border-gray-600 ">
       <div className="flex flex-col gap-8  ">
@@ -60,6 +63,11 @@ const LeftSidebar = () => {
         <div className="flex items-center gap-4 cursor-pointer">
           <CiCircleMore className="size-8" />
           <h2 className="font-bold">More</h2>
+        </div>
+
+        <div className="flex items-center gap-4 cursor-pointer" onClick={logoutUser}>
+          <CiLogout className="size-8" />
+          <h2 className="font-bold">Logout</h2>
         </div>
         <button className="bg-blue-400 w-1/2 py-2 rounded-full cursor-pointer">
           Tweet

@@ -46,5 +46,16 @@ export const UserProvider = ({ children }) => {
 
   }
 
-  return <UserContext.Provider value={{user,setUser,registerUser,loginUser,setIsCheckingAuth,isCheckingAuth,checkAuth}}>{children}</UserContext.Provider>;
+  const logoutUser=async()=>{
+    try {
+        await axiosInstance.post("/auth/logout");
+        setUser(null);
+        toast.success("User logged out successfully");
+    } catch (error) {
+        toast.error("Failed to logout user");
+        console.log(error);
+    }
+  }
+
+  return <UserContext.Provider value={{user,setUser,registerUser,loginUser,setIsCheckingAuth,isCheckingAuth,checkAuth,logoutUser}}>{children}</UserContext.Provider>;
 };

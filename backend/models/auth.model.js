@@ -21,8 +21,28 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    proffession:{
+      type: String,
+      required: true,
+    },
+    location:{
+      type: String,
+      required: true,
+    },
+    joinedAt:{
+      type: Date,
+      default: Date.now,
+    },
+    followers:[{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    }],
+    following:[{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    }],
   },
-  { timeseries: true }
+  { timestamps: true }
 );
 
 userSchema.methods.generateAuthToken = async function () {
