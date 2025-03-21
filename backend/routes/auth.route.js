@@ -1,6 +1,6 @@
 import express from 'express';
 import { body } from 'express-validator';
-import { login, logout, signup } from '../controllers/auth.controller.js';
+import { login, logout, signup, updateProfile } from '../controllers/auth.controller.js';
 import { protectRoute } from './../middleware/user.middleware.js';
 import { checkAuth } from './../controllers/auth.controller.js';
 
@@ -22,6 +22,7 @@ authRouter.post('/login',
 
 authRouter.post('/logout',logout)
 authRouter.get("/check",protectRoute,checkAuth);
+authRouter.put("/updateProfile",protectRoute,updateProfile);
 
 
 export default authRouter;

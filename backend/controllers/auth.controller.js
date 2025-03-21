@@ -1,6 +1,7 @@
 import { validationResult } from "express-validator";
 import userModel from "./../models/auth.model.js";
 import createUser from "./../services/auth.services.js";
+import cloudinary from "./../config/cloudinary.js";
 
 export const signup = async (req, res) => {
   const errors = validationResult(req);
@@ -8,7 +9,7 @@ export const signup = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    const { name, email, password,proffession,location } = req.body;
+    const { name, email, password, proffession, location } = req.body;
 
     const hashedPassword = await userModel.hashPassword(password);
 
@@ -72,6 +73,27 @@ export const checkAuth = async (req, res, next) => {
     res.status(200).json(req.user);
   } catch (error) {
     console.error("error in checking authentication", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+export const updateProfile = async (req, res, next) => {
+  try {
+    const { profilePic } = req.body;
+    const userId = req.user._id;
+
+    if (!profilePic) {
+      throw new Error("Profile picture is required");
+    }
+    const uploadResponse = cloudinary.uploader.upload(profilePic);
+    const updatedUser = await userModel.findByIdAndUpdate(
+      userId,
+      { profilePic: (await uploadResponse).secure_url },
+      { new: true }
+    );
+    res.json(updatedUser);
+  } catch (error) {
+    console.error("error in updating profile", error);
     res.status(500).json({ message: "Server Error" });
   }
 };

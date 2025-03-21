@@ -1,15 +1,31 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa6";
-import profileImage from "../assets/profileImage.jpeg";
-import { CiLocationArrow1 } from "react-icons/ci";
+import { CiCamera, CiLocationArrow1 } from "react-icons/ci";
 import { MdDateRange } from "react-icons/md";
 import PostCard from "./../components/PostCard";
 import { Link } from "react-router-dom";
 import { UserContext } from './../../context/UserContext';
 import { formatDate } from './../../lib/formatDate';
+
 const ProfilePage = () => {
-  const {user}=useContext(UserContext);
-  console.log(user);
+  const {user,updateProfile}=useContext(UserContext);
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) {
+      toast.error("Please select a valid image file.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+
+    reader.onloadend = async () => {
+      const image = reader.result;
+      setSelectedImage(image);
+      await updateProfile({profilePic: image  });
+    };
+  };
   
   return (
     <div className="border-r-1 h-screen border-gray-600 overflow-auto scrollbar-hide">
@@ -28,11 +44,20 @@ const ProfilePage = () => {
           alt=""
           className="w-full h-96 object-cover rounded"
         />
-        <img
-          src={profileImage}
-          alt=""
-          className="size-30 rounded-full absolute top-80 left-2 "
-        />
+        <label className="absolute top-80 left-2" htmlFor="avatar upload">
+            <img
+              className="size-32 rounded-full"
+              src={selectedImage || user?.profilePic || "/avatar.png"}
+              alt="Profile Picture"
+            />
+            <input
+              type="file"
+              id="avatar upload"
+              onChange={handleImageUpload}
+              className="hidden object-cover"
+            />
+            <CiCamera className="text-3xl absolute top-20 right-3 text-black bg-gray-100 rounded-full" />
+          </label>
         <div className="flex justify-end mt-2 ">
           <button className="px-4 py-2 text-blue-400 border border-blue-400  rounded-full cursor-pointer">
             Edit Profile

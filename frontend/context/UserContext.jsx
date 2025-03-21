@@ -7,20 +7,19 @@ export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true)
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
   const checkAuth = async () => {
     try {
       const res = await axiosInstance.get("/auth/check");
       setUser(res.data);
     } catch (error) {
-      setUser(null); 
+      setUser(null);
       toast.error("Failed to check authentication");
     } finally {
       setIsCheckingAuth(false); // ✅ Always set to false
     }
   };
-  
 
   const registerUser = async (userData) => {
     try {
@@ -33,29 +32,54 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-
-  const loginUser=async (userData) => {
+  const loginUser = async (userData) => {
     try {
-        const res= await axiosInstance.post("/auth/login", userData);
-        setUser(res.data);
-        toast.success("User logged in successfully");
+      const res = await axiosInstance.post("/auth/login", userData);
+      setUser(res.data);
+      toast.success("User logged in successfully");
     } catch (error) {
-        toast.error("Failed to login user");
-        console.log(error);
+      toast.error("Failed to login user");
+      console.log(error);
     }
+  };
 
-  }
-
-  const logoutUser=async()=>{
+  const logoutUser = async () => {
     try {
-        await axiosInstance.post("/auth/logout");
-        setUser(null);
-        toast.success("User logged out successfully");
+      await axiosInstance.post("/auth/logout");
+      setUser(null);
+      toast.success("User logged out successfully");
     } catch (error) {
-        toast.error("Failed to logout user");
-        console.log(error);
+      toast.error("Failed to logout user");
+      console.log(error);
     }
-  }
+  };
 
-  return <UserContext.Provider value={{user,setUser,registerUser,loginUser,setIsCheckingAuth,isCheckingAuth,checkAuth,logoutUser}}>{children}</UserContext.Provider>;
+  const updateProfile = async (data) => {
+    try {
+      const res = await axiosInstance.put("/auth/updateProfile", data);
+      setUser(res.data);
+      toast.success("Profile updated successfully");
+    } catch (error) {
+      toast.error("Failed to update profile");
+      console.log(error);
+    }
+  };
+
+  return (
+    <UserContext.Provider
+      value={{
+        user,
+        setUser,
+        registerUser,
+        loginUser,
+        setIsCheckingAuth,
+        isCheckingAuth,
+        checkAuth,
+        logoutUser,
+        updateProfile
+      }}
+    >
+      {children}
+    </UserContext.Provider>
+  );
 };
