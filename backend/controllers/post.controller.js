@@ -1,6 +1,6 @@
 import { validationResult } from "express-validator";
-import cloudinary from './../config/cloudinary.js';
-import postModel from './../models/post.model.js';
+import cloudinary from "./../config/cloudinary.js";
+import postModel from "./../models/post.model.js";
 
 export const createPost = async (req, res) => {
   const errors = validationResult(req);
@@ -14,9 +14,8 @@ export const createPost = async (req, res) => {
     if (!req.user) {
       return res.status(401).json({ error: "Unauthorized" });
     }
-    if(!image)
-    {
-        return res.status(400).json({error: "No image provided"});
+    if (!image) {
+      return res.status(400).json({ error: "No image provided" });
     }
 
     const result = await cloudinary.uploader.upload(image.path, {
@@ -36,13 +35,36 @@ export const createPost = async (req, res) => {
   }
 };
 
-export const fetchPost=async(req, res, next) =>{
+export const fetchPost = async (req, res, next) => {
   try {
-     const posts=await postModel.find().populate("createdBy","name email profilePic")
-     res.json(posts);
+    const posts = await postModel
+      .find()
+      .populate("createdBy", "name email profilePic")
+      .sort({ createdAt: -1 }); // Sort by latest post
+    res.json(posts);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Server error" });
-    
   }
-}
+};
+
+export const fetchPostByUserId = async (req, res, next) => {
+  try {
+    const userId = req.user._id; // Get user ID from the request (assuming authentication)
+
+    const posts = await postModel
+      .find({ createdBy: userId}) // Find all posts created by the user
+      .populate("createdBy", "name email profilePic") // Populate createdBy with user details
+      .sort({ createdAt: -1 }); // Sort by latest post
+
+    if (!posts.length) { // Check if posts array is empty
+      return res.status(404).json({ error: "No posts found for this user" });
+    }
+
+    res.json(posts);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+

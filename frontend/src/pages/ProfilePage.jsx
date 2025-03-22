@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa6";
 import { CiCamera, CiLocationArrow1 } from "react-icons/ci";
 import { MdDateRange } from "react-icons/md";
@@ -6,10 +6,21 @@ import PostCard from "./../components/PostCard";
 import { Link } from "react-router-dom";
 import { UserContext } from './../../context/UserContext';
 import { formatDate } from './../../lib/formatDate';
+import { PostContext } from './../../context/Post.Context';
 
 const ProfilePage = () => {
   const {user,updateProfile}=useContext(UserContext);
   const [selectedImage, setSelectedImage] = useState(null);
+
+  const {fetchPostByUserId,postData}=useContext(PostContext);
+
+  useEffect(() => {
+    fetchPostByUserId();
+  }, []);
+
+  useEffect(() => {
+      console.log(postData);
+    }, [postData]); // Empty dependency array ensures it runs only once
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -92,7 +103,7 @@ const ProfilePage = () => {
         </div>
         <hr className="w-full border-gray-600 mt-4" />
       </div>
-      <PostCard />
+      <PostCard posts={postData}/>
     </div>
   );
 };

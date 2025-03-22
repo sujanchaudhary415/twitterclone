@@ -9,20 +9,22 @@ import { CiCircleMore } from "react-icons/ci";
 import { CiUser } from "react-icons/ci";
 import { CiViewList } from "react-icons/ci";
 import profileImage from "../assets/profileImage.jpeg";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { CiLogout } from "react-icons/ci";
 import { UserContext } from './../../context/UserContext';
+
 const LeftSidebar = () => {
   const {logoutUser}=useContext(UserContext);
+  const location = useLocation(); // Get the current path
   return (
     <div className="flex flex-col justify-between h-screen py-2 border-r-1 border-gray-600 ">
       <div className="flex flex-col gap-8  ">
-        <div>
+        <Link to='/'>
           <FaTwitter className="size-8" />
-        </div>
+        </Link>
         <Link
           to="/"
-          className="flex items-center gap-4 text-blue-400 cursor-pointer"
+          className={`flex items-center gap-4 ${location.pathname==='/'? "text-blue-400":"text-white"} cursor-pointer`}
         >
           <RiHome4Fill className="size-8" />
           <h2 className="font-bold">Home</h2>
@@ -54,7 +56,7 @@ const LeftSidebar = () => {
 
         <Link
           to="/myProfile"
-          className="flex items-center gap-4 cursor-pointer"
+          className={`flex items-center gap-4 ${location.pathname==='/myProfile'? "text-blue-400":"text-white"} cursor-pointer`}
         >
           <CiUser className="size-8" />
           <h2 className="font-bold">Profile</h2>

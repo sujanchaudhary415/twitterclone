@@ -19,7 +19,7 @@ export const PostProvider = ({ children }) => {
     }
   };
 
-   const fetchPosts=async()=>{
+  const fetchPosts = async () => {
     try {
       const res = await axiosInstance.get("/posts/get");
       setPostData(res.data);
@@ -27,7 +27,23 @@ export const PostProvider = ({ children }) => {
       toast.error("Failed to fetch posts");
       console.log(error);
     }
-  }
+  };
 
-  return <PostContext.Provider value={{createPost,postData,fetchPosts}}>{children}</PostContext.Provider>;
+  const fetchPostByUserId = async () => {
+    try {
+      const res = await axiosInstance.get(`/posts/getByUserId`);
+      setPostData(res.data);
+    } catch (error) {
+      toast.error("Failed to fetch posts by user id");
+      console.log(error);
+    }
+  };
+
+  return (
+    <PostContext.Provider
+      value={{ createPost, postData, fetchPosts, fetchPostByUserId }}
+    >
+      {children}
+    </PostContext.Provider>
+  );
 };

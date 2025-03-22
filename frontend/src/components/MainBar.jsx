@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 import { GiStarsStack } from "react-icons/gi";
 import { CiImageOn } from "react-icons/ci";
-import profileImage from "../assets/profileImage.jpeg";
 import PostCard from "./PostCard";
 import { PostContext } from "../../context/Post.Context.jsx";
+import { UserContext } from "../../context/UserContext.jsx";
 
 const MainBar = () => {
   const [formData, setFormData] = useState({
@@ -12,13 +12,12 @@ const MainBar = () => {
 
   const [imagePreview, setImagePreview] = useState(null);
 
-  const { createPost, fetchPosts, postData } = useContext(PostContext);
+  const { createPost, fetchPosts, postData} = useContext(PostContext);
+  const {user}=useContext(UserContext);
 
   useEffect(() => {
     fetchPosts();
   }, []); // Empty dependency array ensures it runs only once
-
-
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -52,7 +51,7 @@ const MainBar = () => {
       {/** Post Input Section */}
       <div className="px-4 py-4 flex items-start gap-3">
         <img
-          src={profileImage}
+          src={user?.profilePic}
           alt="Profile"
           className="size-12 rounded-full object-cover"
         />

@@ -1,5 +1,4 @@
 import React from "react";
-import profileImage from "../assets/profileImage.jpeg";
 import { FaRegComment } from "react-icons/fa";
 import { FcLike } from "react-icons/fc";
 
@@ -10,7 +9,7 @@ const PostCard = ({ posts }) => {
         posts.map((post) => (
           <div key={post._id} className="px-4 py-4 flex gap-3 border-b border-gray-700">
             {/* Profile Image */}
-            <img src={profileImage} alt="User" className="size-10 rounded-full" />
+            <img src={post.createdBy.profilePic} alt="User" className="size-10 rounded-full" />
 
             {/* Post Content */}
             <div className="flex-1">
