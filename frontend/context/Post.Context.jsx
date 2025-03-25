@@ -39,9 +39,21 @@ export const PostProvider = ({ children }) => {
     }
   };
 
+  const addComment=async(postId,commentText)=>{
+    try {
+      const res = await axiosInstance.post(`/posts/addComment`, { postId, comment: commentText });
+      toast.success("Comment added successfully");
+      setPostData(prevState=>prevState.map(post=>post._id===postId? {...post, comments:[...post.comments, res.data]}:post))
+
+    } catch (error) {
+       toast.error("Failed to add comment");
+      console.log(error);
+    }
+  }
+
   return (
     <PostContext.Provider
-      value={{ createPost, postData, fetchPosts, fetchPostByUserId }}
+      value={{ createPost, postData, fetchPosts, fetchPostByUserId,addComment}}
     >
       {children}
     </PostContext.Provider>

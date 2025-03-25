@@ -68,3 +68,30 @@ export const fetchPostByUserId = async (req, res, next) => {
   }
 };
 
+
+export const addComment = async (req, res) => {
+  try {
+    const { postId, comment } = req.body;
+    const user=req.user;
+
+    if (!postId || !comment) {
+      return res.status(400).json({ error: "Post ID and comment are required" });
+    }
+
+    const post = await postModel.findByIdAndUpdate(
+      postId,
+      { $push: { comments: { text: comment, user } } }, // Push an object
+      { new: true }
+    );
+
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    res.json(post);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
