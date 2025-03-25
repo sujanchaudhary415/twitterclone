@@ -40,6 +40,7 @@ export const fetchPost = async (req, res, next) => {
     const posts = await postModel
       .find()
       .populate("createdBy", "name email profilePic")
+      .populate("comments.createdBy", "name email profilePic")
       .sort({ createdAt: -1 }); // Sort by latest post
     res.json(posts);
   } catch (error) {
@@ -53,11 +54,12 @@ export const fetchPostByUserId = async (req, res, next) => {
     const userId = req.user._id; // Get user ID from the request (assuming authentication)
 
     const posts = await postModel
-      .find({ createdBy: userId}) // Find all posts created by the user
+      .find({ createdBy: userId }) // Find all posts created by the user
       .populate("createdBy", "name email profilePic") // Populate createdBy with user details
       .sort({ createdAt: -1 }); // Sort by latest post
 
-    if (!posts.length) { // Check if posts array is empty
+    if (!posts.length) {
+      // Check if posts array is empty
       return res.status(404).json({ error: "No posts found for this user" });
     }
 
@@ -68,30 +70,39 @@ export const fetchPostByUserId = async (req, res, next) => {
   }
 };
 
-
 export const addComment = async (req, res) => {
   try {
     const { postId, comment } = req.body;
-    const user=req.user;
+    const user = req.user;
 
-    if (!postId || !comment) {
-      return res.status(400).json({ error: "Post ID and comment are required" });
+    if(!user){
+      return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const post = await postModel.findByIdAndUpdate(
+    if (!postId || !comment) {
+      return res
+        .status(400)
+        .json({ error: "Post ID and comment are required" });
+    }
+
+    // Add comment using findByIdAndUpdate
+    const updatedPost = await postModel.findByIdAndUpdate(
       postId,
-      { $push: { comments: { text: comment, user } } }, // Push an object
-      { new: true }
+      {
+        $push: { comments: { text: comment, createdBy: user._id } }
+      },
+      { new: true } // Return updated document
     );
 
-    if (!post) {
+    if (!updatedPost) {
       return res.status(404).json({ error: "Post not found" });
     }
 
-    res.json(post);
+    res.json(updatedPost);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Server error" });
   }
 };
+
 
