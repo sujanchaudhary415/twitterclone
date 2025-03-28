@@ -39,21 +39,53 @@ export const PostProvider = ({ children }) => {
     }
   };
 
-  const addComment=async(postId,commentText)=>{
+  const addComment = async (postId, commentText) => {
     try {
-      const res = await axiosInstance.post(`/posts/addComment`, { postId, comment: commentText });
+      const res = await axiosInstance.post(`/posts/addComment`, {
+        postId,
+        comment: commentText,
+      });
       toast.success("Comment added successfully");
-      setPostData(prevState=>prevState.map(post=>post._id===postId? {...post, comments:[...post.comments, res.data]}:post))
-
+      setPostData((prevState) =>
+        prevState.map((post) =>
+          post._id === postId
+            ? { ...post, comments: [...post.comments, res.data] }
+            : post
+        )
+      );
     } catch (error) {
-       toast.error("Failed to add comment");
+      toast.error("Failed to add comment");
       console.log(error);
     }
-  }
+  };
+
+  const likePost = async (postId, userId) => {
+    try {
+      const res = await axiosInstance.post(`/posts/like`, { postId });
+      const updatedPost = res.data.post; // Get updated post from backend
+  
+      setPostData((prevState) =>
+        prevState.map((post) =>
+          post._id === postId ? { ...post, likes: updatedPost.likes } : post
+        )
+      );
+      toast.success(res.data.message); // Use backend message for clarity
+    } catch (error) {
+      toast.error("Failed to like post");
+      console.error(error);
+    }  
+  };
 
   return (
     <PostContext.Provider
-      value={{ createPost, postData, fetchPosts, fetchPostByUserId,addComment}}
+      value={{
+        createPost,
+        postData,
+        fetchPosts,
+        fetchPostByUserId,
+        addComment,
+        likePost,
+      }}
     >
       {children}
     </PostContext.Provider>

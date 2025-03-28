@@ -56,6 +56,7 @@ export const fetchPostByUserId = async (req, res, next) => {
     const posts = await postModel
       .find({ createdBy: userId }) // Find all posts created by the user
       .populate("createdBy", "name email profilePic") // Populate createdBy with user details
+      .populate("comments.createdBy", "name email profilePic")
       .sort({ createdAt: -1 }); // Sort by latest post
 
     if (!posts.length) {
@@ -75,7 +76,7 @@ export const addComment = async (req, res) => {
     const { postId, comment } = req.body;
     const user = req.user;
 
-    if(!user){
+    if (!user) {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
@@ -89,7 +90,7 @@ export const addComment = async (req, res) => {
     const updatedPost = await postModel.findByIdAndUpdate(
       postId,
       {
-        $push: { comments: { text: comment, createdBy: user._id } }
+        $push: { comments: { text: comment, createdBy: user._id } },
       },
       { new: true } // Return updated document
     );
@@ -105,4 +106,39 @@ export const addComment = async (req, res) => {
   }
 };
 
+export const likePost = async (req, res) => {
+  try {
+    const { postId } = req.body;
+    const user = req.user; // Ensure user is extracted from auth middleware
+
+    if (!user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    if (!postId) {
+      return res.status(400).json({ error: "Post ID is required" });
+    }
+
+    const post = await postModel.findById(postId);
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    const hasLiked = post.likes.includes(user._id);
+
+    const updatedPost = await postModel.findByIdAndUpdate(
+      postId,
+      hasLiked ? { $pull: { likes: user._id } } : { $push: { likes: user._id } },
+      { new: true }
+    );
+
+    res.status(200).json({
+      success: true,
+      post: updatedPost,
+      message: hasLiked ? "Like removed" : "Post liked",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
 

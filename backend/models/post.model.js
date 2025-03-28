@@ -44,12 +44,6 @@ const postSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-postSchema.methods.addComment = async function (commentData) {
-  this.comments.push(commentData);
-  await this.save();
-  return { mesage: "Comment added successfully" };
-};
-
 const postModel = mongoose.model("Post", postSchema);
 
 export default postModel;

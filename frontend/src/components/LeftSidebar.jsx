@@ -26,32 +26,32 @@ const LeftSidebar = () => {
           to="/"
           className={`flex items-center gap-4 ${location.pathname==='/'? "text-blue-400":"text-white"} cursor-pointer`}
         >
-          <RiHome4Fill className="size-8" />
-          <h2 className="font-bold">Home</h2>
+          <RiHome4Fill className="size-8 " />
+          <h2 className="font-bold  md:block hidden">Home</h2>
         </Link>
         <div className="flex items-center gap-4 cursor-pointer">
           <CiHashtag className="size-8" />
-          <h2 className="font-bold">Explore</h2>
+          <h2 className="font-bold  md:block hidden">Explore</h2>
         </div>
 
         <div className="flex items-center gap-4 cursor-pointer">
           <FaRegBell className="size-8" />
-          <h2 className="font-bold">Notifications</h2>
+          <h2 className="font-bold  md:block hidden">Notifications</h2>
         </div>
 
         <div className="flex items-center gap-4 cursor-pointer">
           <FaRegMessage className="size-8" />
-          <h2 className="font-bold">Messages</h2>
+          <h2 className="font-bold  md:block hidden">Messages</h2>
         </div>
 
         <div className="flex items-center gap-4 cursor-pointer">
           <CiBookmark className="size-8" />
-          <h2 className="font-bold">Bookmarks</h2>
+          <h2 className="font-bold  md:block hidden">Bookmarks</h2>
         </div>
 
         <div className="flex items-center gap-4 cursor-pointer">
           <CiViewList className="size-8" />
-          <h2 className="font-bold">Lists</h2>
+          <h2 className="font-bold  md:block hidden">Lists</h2>
         </div>
 
         <Link
@@ -59,19 +59,19 @@ const LeftSidebar = () => {
           className={`flex items-center gap-4 ${location.pathname==='/myProfile'? "text-blue-400":"text-white"} cursor-pointer`}
         >
           <CiUser className="size-8" />
-          <h2 className="font-bold">Profile</h2>
+          <h2 className="font-bold  md:block hidden">Profile</h2>
         </Link>
 
         <div className="flex items-center gap-4 cursor-pointer">
           <CiCircleMore className="size-8" />
-          <h2 className="font-bold">More</h2>
+          <h2 className="font-bold  md:block hidden">More</h2>
         </div>
 
         <div className="flex items-center gap-4 cursor-pointer" onClick={logoutUser}>
           <CiLogout className="size-8" />
-          <h2 className="font-bold">Logout</h2>
+          <h2 className="font-bold  md:block hidden">Logout</h2>
         </div>
-        <button className="bg-blue-400 w-1/2 py-2 rounded-full cursor-pointer">
+        <button className="bg-blue-400 w-1/2 py-2 rounded-full cursor-pointer  md:block hidden">
           Tweet
         </button>
       </div>
