@@ -120,3 +120,45 @@ export const getLoggedInUser = async (req, res, next) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
+
+export const follow = async (req, res, next) => {
+  try {
+    const { userId } = req.body; // ID of the user to follow/unfollow
+    const loggedInUser = req.user._id; // ID of the logged-in user
+
+    const userToFollow = await userModel.findById(userId);
+    const currentUser = await userModel.findById(loggedInUser);
+
+    if (!userToFollow || !currentUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if the user is already followed
+    const isFollowing = userToFollow.followers.includes(loggedInUser);
+
+    if (isFollowing) {
+      // Unfollow user
+      userToFollow.followers = userToFollow.followers.filter(
+        (id) => id.toString() !== loggedInUser.toString()
+      );
+      currentUser.following = currentUser.following.filter(
+        (id) => id.toString() !== userId.toString()
+      );
+      await userToFollow.save();
+      await currentUser.save();
+      return res.json({ message: "User unfollowed successfully" });
+    } else {
+      // Follow user
+      userToFollow.followers.push(loggedInUser);
+      currentUser.following.push(userId);
+      await userToFollow.save();
+      await currentUser.save();
+      return res.json({ message: "User followed successfully" });
+    }
+  } catch (error) {
+    console.error("Error in follow/unfollow action:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+

@@ -5,7 +5,8 @@ import { UserContext } from "./../../context/UserContext";
 const RightSidebar = () => {
   const [search, setSearch] = useState("");
   const [users, setUsers] = useState([]);
-  const { getUser, user, getLoggedInUser, loggedInUser } = useContext(UserContext);
+  const { getUser, user, getLoggedInUser, loggedInUser, follow } =
+    useContext(UserContext);
 
   useEffect(() => {
     getUser();
@@ -14,14 +15,29 @@ const RightSidebar = () => {
 
   useEffect(() => {
     console.log("Fetched user data:", user);
-    if (Array.isArray(user)&& loggedInUser) {
-      const filteredUsers = user.filter((u)=>u._id !== loggedInUser._id);
-      setUsers(filteredUsers.map((u) => ({ ...u, followed: false })));
-    }
-  }, [user]);
+    if (Array.isArray(user) && loggedInUser) {
+      const filteredUsers = user
+        .filter((u) => u._id !== loggedInUser._id)
+        .map((u) => ({
+          ...u,
+          followed: loggedInUser.following?.includes(u._id) || false, // Check if logged-in user follows them
+        }));
 
-  const toggleFollow = (userId) => {
-    setUsers(users.map((u) => (u._id === userId ? { ...u, followed: !u.followed } : u)));
+      setUsers(filteredUsers);
+    }
+  }, [user, loggedInUser]);
+
+  const toggleFollow = async (userId) => {
+    try {
+      await follow(userId); // Call API to update follow status in backend
+      setUsers((prevUsers) =>
+        prevUsers.map((u) =>
+          u._id === userId ? { ...u, followed: !u.followed } : u
+        )
+      );
+    } catch (error) {
+      console.error("Error following user:", error);
+    }
   };
 
   return (
@@ -53,8 +69,10 @@ const RightSidebar = () => {
                 <p className="text-gray-400 text-sm">{u.email}</p>
               </div>
               <button
-                className={`px-3 py-1 text-sm rounded-full ${
-                  u.followed ? "bg-red-600 hover:bg-red-700" : "bg-blue-600 hover:bg-blue-700"
+                className={`px-3 py-1 text-sm rounded-full transition ${
+                  u.followed
+                    ? "bg-red-600 hover:bg-red-700"
+                    : "bg-blue-600 hover:bg-blue-700"
                 }`}
                 onClick={() => toggleFollow(u._id)}
               >

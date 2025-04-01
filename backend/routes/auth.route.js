@@ -1,6 +1,7 @@
 import express from "express";
 import { body } from "express-validator";
 import {
+  follow,
   getLoggedInUser,
   getUser,
   login,
@@ -35,5 +36,6 @@ authRouter.get("/check", protectRoute, checkAuth);
 authRouter.put("/updateProfile", protectRoute, updateProfile);
 authRouter.get("/getUser", getUser);
 authRouter.get("/me",protectRoute,getLoggedInUser);
+authRouter.post("/follow", protectRoute, follow);
 
 export default authRouter;

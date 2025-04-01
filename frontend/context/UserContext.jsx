@@ -3,7 +3,6 @@ import React from "react";
 import { toast } from "react-toastify";
 import { axiosInstance } from "../lib/axios";
 
-
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
@@ -89,6 +88,26 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+  
+  const follow = async (userId, isFollowing) => {
+    try {
+      await axiosInstance.post("/auth/follow", { userId });
+  
+      if (isFollowing) {
+        toast.success("User unfollowed successfully");
+      } else {
+        toast.success("User followed successfully");
+      }
+  
+      await getLoggedInUser(); // Refresh user data
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to update follow status");
+      console.error(error);
+    }
+  };
+  
+  
+
   return (
     <UserContext.Provider
       value={{
@@ -103,7 +122,8 @@ export const UserProvider = ({ children }) => {
         updateProfile,
         getUser,
         getLoggedInUser,
-        loggedInUser,   
+        loggedInUser,
+        follow
       }}
     >
       {children}
