@@ -3,10 +3,12 @@ import React from "react";
 import { toast } from "react-toastify";
 import { axiosInstance } from "../lib/axios";
 
+
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [loggedInUser, setLoggedInUser] = useState(null); // Stores logged-in user
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
   const checkAuth = async () => {
@@ -65,6 +67,28 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+  const getUser = async () => {
+    try {
+      const res = await axiosInstance.get("/auth/getUser");
+      setUser(res.data);
+    } catch (error) {
+      setUser(null);
+      toast.error("Failed to get user");
+    } finally {
+      setIsCheckingAuth(false); // ✅ Always set to false
+    }
+  };
+
+  const getLoggedInUser = async () => {
+    try {
+      const res = await axiosInstance.get("/auth/me");
+      setLoggedInUser(res.data);
+    } catch (error) {
+      toast.error("Failed to get logged in user");
+      console.log(error);
+    }
+  };
+
   return (
     <UserContext.Provider
       value={{
@@ -76,7 +100,10 @@ export const UserProvider = ({ children }) => {
         isCheckingAuth,
         checkAuth,
         logoutUser,
-        updateProfile
+        updateProfile,
+        getUser,
+        getLoggedInUser,
+        loggedInUser,   
       }}
     >
       {children}

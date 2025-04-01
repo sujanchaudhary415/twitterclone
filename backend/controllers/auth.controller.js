@@ -97,3 +97,26 @@ export const updateProfile = async (req, res, next) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
+
+export const getUser = async (req, res, next) => {
+  try {
+    const user = await userModel.find({}).select("-password");
+    res.json(user);
+  } catch (error) {
+    console.error("error in getting user", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+export const getLoggedInUser = async (req, res, next) => {
+  try {
+    const user = await userModel.findById(req.user._id).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json(user);
+  } catch (error) {
+    console.error("error in getting logged in user", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};

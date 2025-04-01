@@ -5,8 +5,8 @@ import { UserContext } from "../context/UserContext";
 import HomePage from "./pages/HomePage";
 import SignupPage from "./pages/SignupPage";
 import LoginPage from "./pages/LoginPage";
-import Layout from "./components/Layout"; // Import the Layout component
-import ProfilePage from './pages/ProfilePage';
+import Layout from "./components/Layout";
+import ProfilePage from "./pages/ProfilePage";
 
 const App = () => {
   const { user, checkAuth, isCheckingAuth } = useContext(UserContext);
@@ -17,17 +17,17 @@ const App = () => {
 
   if (isCheckingAuth) {
     return (
-      <div className="h-screen flex items-center justify-center text-4xl">
+      <div className="min-h-screen flex flex-col items-center justify-center text-4xl bg-black text-white">
         Loading...
       </div>
-    ); 
+    );
   }
 
   return (
-    <div className="bg-black w-full h-full text-white">
+    <div className="min-h-screen w-full bg-black text-white">
       <ToastContainer />
       <Routes>
-        {/* Login & Signup Routes (No Sidebar) */}
+        {/* Login & Signup Routes */}
         <Route path="/signup" element={!user ? <SignupPage /> : <Navigate to="/" />} />
         <Route path="/login" element={!user ? <LoginPage /> : <Navigate to="/" />} />
 
@@ -35,7 +35,6 @@ const App = () => {
         <Route element={user ? <Layout /> : <Navigate to="/login" />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/myProfile" element={<ProfilePage />} />
-          {/* Add more pages here (e.g., Profile, Dashboard, etc.) */}
         </Route>
       </Routes>
     </div>
