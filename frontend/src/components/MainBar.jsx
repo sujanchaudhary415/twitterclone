@@ -13,11 +13,16 @@ const MainBar = () => {
   const [imagePreview, setImagePreview] = useState(null);
 
   const { createPost, fetchPosts, postData} = useContext(PostContext);
-  const {user}=useContext(UserContext);
+  const {loggedInUser,getLoggedInUser}=useContext(UserContext);
 
   useEffect(() => {
     fetchPosts();
+    getLoggedInUser();
   }, []); // Empty dependency array ensures it runs only once
+
+  useEffect(()=>{
+    console.log(loggedInUser)
+  },[])
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -51,7 +56,7 @@ const MainBar = () => {
       {/** Post Input Section */}
       <div className="px-4 py-4 flex items-start gap-3">
         <img
-          src={user?.profilePic}
+          src={loggedInUser?.profilePic}
           alt="Profile"
           className="size-12 rounded-full object-cover"
         />

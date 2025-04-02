@@ -8,6 +8,7 @@ import LoginPage from "./pages/LoginPage";
 import Layout from "./components/Layout";
 import ProfilePage from "./pages/ProfilePage";
 
+
 const App = () => {
   const { user, checkAuth, isCheckingAuth } = useContext(UserContext);
 
