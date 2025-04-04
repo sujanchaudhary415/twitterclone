@@ -1,12 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { UserContext } from "./../../context/UserContext";
+import Chat from "./Chat"; // Import Chat component
 
 const RightSidebar = () => {
   const [search, setSearch] = useState("");
   const [users, setUsers] = useState([]);
-  const { getUser, user, getLoggedInUser, loggedInUser, follow } =
-    useContext(UserContext);
+  const [selectedUser, setSelectedUser] = useState(null); // Store selected user for chat
+
+  const { getUser, user, getLoggedInUser, loggedInUser, follow } = useContext(UserContext);
 
   useEffect(() => {
     getUser();
@@ -14,22 +16,20 @@ const RightSidebar = () => {
   }, []);
 
   useEffect(() => {
-    console.log("Fetched user data:", user);
     if (Array.isArray(user) && loggedInUser) {
       const filteredUsers = user
         .filter((u) => u._id !== loggedInUser._id)
         .map((u) => ({
           ...u,
-          followed: loggedInUser.following?.includes(u._id) || false, // Check if logged-in user follows them
+          followed: loggedInUser.following?.includes(u._id) || false,
         }));
-
       setUsers(filteredUsers);
     }
   }, [user, loggedInUser]);
 
   const toggleFollow = async (userId) => {
     try {
-      await follow(userId); // Call API to update follow status in backend
+      await follow(userId);
       setUsers((prevUsers) =>
         prevUsers.map((u) =>
           u._id === userId ? { ...u, followed: !u.followed } : u
@@ -62,7 +62,8 @@ const RightSidebar = () => {
           .map((u) => (
             <div
               key={u._id}
-              className="flex items-center justify-between bg-gray-800 p-3 rounded-lg"
+              className="flex items-center justify-between bg-gray-800 p-3 rounded-lg cursor-pointer"
+              onClick={() => setSelectedUser(u)} // Open chat when clicked
             >
               <div>
                 <p className="font-medium">{u.name}</p>
@@ -74,14 +75,21 @@ const RightSidebar = () => {
                     ? "bg-red-600 hover:bg-red-700"
                     : "bg-blue-600 hover:bg-blue-700"
                 }`}
-                onClick={() => toggleFollow(u._id)}
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent chat from opening when following
+                  toggleFollow(u._id);
+                }}
               >
                 {u.followed ? "Unfollow" : "Follow"}
               </button>
             </div>
           ))}
       </div>
-      
+
+      {/* Chat Box */}
+      {selectedUser && (
+        <Chat senderId={loggedInUser._id} receiverId={selectedUser._id} receiverName={selectedUser.name} closeChat={() => setSelectedUser(null)} />
+      )}
     </div>
   );
 };

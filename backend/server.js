@@ -5,6 +5,7 @@ import authRouter from './routes/auth.route.js';
 import cors from 'cors';
 import cookieParser from "cookie-parser";
 import postRouter from './routes/post.route.js';
+import messageRouter from './routes/message.route.js';
 
 
 dotenv.config();
@@ -19,6 +20,7 @@ app.use(cors({
 // Routes
 app.use('/api/auth',authRouter);
 app.use('/api/posts',postRouter);
+app.use('/api/messages',messageRouter)
 
 app.listen(4000,()=>{
     console.log("Server started at http://localhost:4000");
