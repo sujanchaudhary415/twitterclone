@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
-import { MessageContext } from './../../context/MessageContext';
+import { MessageContext } from "./../../context/MessageContext";
+import { CiImageOn } from "react-icons/ci";
 
 const Chat = ({ senderId, receiverId, receiverName, closeChat }) => {
   const [messages, setMessages] = useState([]);
@@ -59,7 +60,9 @@ const Chat = ({ senderId, receiverId, receiverName, closeChat }) => {
       {/* Header */}
       <div className="flex justify-between items-center mb-3">
         <h2 className="text-lg font-semibold">{receiverName}</h2>
-        <button className="text-red-400" onClick={closeChat}>✖</button>
+        <button className="text-red-400" onClick={closeChat}>
+          ✖
+        </button>
       </div>
 
       {/* Messages */}
@@ -72,7 +75,11 @@ const Chat = ({ senderId, receiverId, receiverName, closeChat }) => {
             }`}
           >
             {msg.text && (
-              <p className={msg.senderId === senderId ? "text-blue-400" : "text-gray-300"}>
+              <p
+                className={
+                  msg.senderId === senderId ? "text-blue-400" : "text-gray-300"
+                }
+              >
                 {msg.text}
               </p>
             )}
@@ -114,20 +121,25 @@ const Chat = ({ senderId, receiverId, receiverName, closeChat }) => {
             onChange={(e) => setNewMessage(e.target.value)}
             className="flex-grow px-3 py-2 bg-gray-800 rounded-l-lg outline-none"
           />
-          <button
-            type="submit"
-            className="bg-blue-600 px-4 py-2 rounded-r-lg"
-          >
+          <button type="submit" className="bg-blue-600 px-4 py-2 rounded-r-lg">
             Send
           </button>
         </div>
 
-        <div className="flex items-center gap-2 text-sm">
+        <div className="flex flex-col gap-3 text-sm">
+          <label
+            htmlFor="file-upload"
+            className="flex items-center gap-2 cursor-pointer p-2 border border-gray-300 rounded-lg hover:bg-gray-100"
+          >
+            <CiImageOn className="text-xl text-blue-500" />
+            <span>Upload Image</span>
+          </label>
           <input
+            id="file-upload"
             type="file"
             accept="image/*"
             onChange={handleImageChange}
-            className="text-sm"
+            className="hidden"
           />
         </div>
       </form>
